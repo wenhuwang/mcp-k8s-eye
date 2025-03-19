@@ -33,17 +33,18 @@ go build -o mcp-k8s-eye
 ## Features
 
 - [x] Connect to a Kubernetes cluster
-- [x] List pods by namespace
-- [x] Get pod
-- [x] Get pod logs
-- [x] Delete pod
-- [x] Exec command in pod
+- [x] Pod management capabilities (list, get, exec, logs, delete)
+- [x] Deployment management capabilities (list, get, scale, delete)
+- [x] Service management capabilities (list, get, delete)
+- [ ] StatefulSet management capabilities (list, get, delete)
+- [ ] DaemonSet management capabilities (list, get, delete)
+- [ ] Ingress management capabilities (list, get, delete)
+- [ ] Node management capabilities (list, get, delete)
 - [x] Analyze pods
-- [ ] List all services
-- [ ] List all deployments
-- [ ] List all nodes
-- [ ] Analyze services
-- [ ] Analyze deployments
+- [x] Analyze services
+- [x] Analyze deployments
+- [ ] Analyze statefulsets
+- [ ] Analyze daemonsets
 - [ ] Analyze ingress
 - [ ] Analyze nodes
 - [ ] Analyze cluster
