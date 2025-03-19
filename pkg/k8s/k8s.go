@@ -1,13 +1,15 @@
 package k8s
 
 import (
+	openapi_v2 "github.com/google/gnostic/openapiv2"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 )
 
 type Kubernetes struct {
-	config    *rest.Config
-	clientset *kubernetes.Clientset
+	config        *rest.Config
+	clientset     *kubernetes.Clientset
+	openapiSchema *openapi_v2.Document
 }
 
 func NewKubernetes() (*Kubernetes, error) {
@@ -17,7 +19,8 @@ func NewKubernetes() (*Kubernetes, error) {
 	}
 
 	return &Kubernetes{
-		config:    config,
-		clientset: clientset,
+		config:        config,
+		clientset:     clientset,
+		openapiSchema: &openapi_v2.Document{},
 	}, nil
 }

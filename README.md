@@ -2,6 +2,20 @@
 
 mcp-k8s-eye is a tool that can manage kubernetes cluster and analyze workload status.
 
+## Requirements
+- Go 1.23 or higher
+- kubectl configured
+
+## Installation
+```
+# clone the repository
+git clone https://github.com/wenhuwang/mcp-k8s-eye.git
+cd mcp-k8s-eye
+
+# build the binary
+go build -o mcp-k8s-eye
+```
+
 ## Usage
 ```
 {

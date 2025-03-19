@@ -19,17 +19,22 @@ func (k *Kubernetes) PodList(ctx context.Context, namespace string) (string, err
 	if err != nil {
 		return "", err
 	}
-	for _, pod := range podList.Items {
-		pod.SetManagedFields(nil)
-	}
+
+	cleaner := utils.NewResourceCleaner()
+	cleaner.CleanList(podList)
+
 	return podList.String(), nil
 }
+
 func (k *Kubernetes) PodGet(ctx context.Context, namespace, name string) (string, error) {
 	pod, err := k.clientset.CoreV1().Pods(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
 		return "", err
 	}
-	pod.SetManagedFields(nil)
+
+	cleaner := utils.NewResourceCleaner()
+	cleaner.Clean(pod)
+
 	return pod.String(), nil
 }
 

@@ -16,7 +16,7 @@ func NewServer() (*Server, error) {
 	s := &Server{
 		server: server.NewMCPServer(
 			"mcp-k8s-eye",
-			"v0.0.1",
+			"v0.0.2",
 			server.WithResourceCapabilities(true, true),
 			server.WithPromptCapabilities(true),
 			server.WithLogging(),
@@ -30,6 +30,8 @@ func NewServer() (*Server, error) {
 
 	s.server.AddTools(slices.Concat(
 		s.initPods(),
+		s.initDeployments(),
+		s.initServices(),
 	)...)
 
 	return s, nil
