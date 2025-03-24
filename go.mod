@@ -3,18 +3,18 @@ module github.com/wenhuwang/mcp-k8s-eye
 go 1.23.6
 
 require (
+	bou.ke/monkey v1.0.2
 	github.com/google/gnostic v0.7.0
 	github.com/mark3labs/mcp-go v0.10.3
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.19.0
-	go.etcd.io/etcd v3.3.27+incompatible
+	github.com/stretchr/testify v1.9.0
 	k8s.io/api v0.32.2
 	k8s.io/apimachinery v0.32.2
 	k8s.io/client-go v0.32.2
 )
 
 require (
-	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/emicklei/go-restful/v3 v3.11.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
@@ -44,6 +44,7 @@ require (
 	github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f // indirect
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
@@ -65,7 +66,6 @@ require (
 	gopkg.in/evanphx/json-patch.v4 v4.12.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20241105132330-32ad38e42d3f // indirect

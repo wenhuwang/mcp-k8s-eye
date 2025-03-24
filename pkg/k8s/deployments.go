@@ -11,6 +11,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
+// DeploymentList lists all deployments in a namespace.
 func (k *Kubernetes) DeploymentList(ctx context.Context, namespace string) (string, error) {
 	deployList, err := k.clientset.AppsV1().Deployments(namespace).List(ctx, metav1.ListOptions{})
 	if err != nil {
@@ -23,6 +24,7 @@ func (k *Kubernetes) DeploymentList(ctx context.Context, namespace string) (stri
 	return deployList.String(), nil
 }
 
+// DeploymentGet gets a deployment.
 func (k *Kubernetes) DeploymentGet(ctx context.Context, namespace, name string) (string, error) {
 	deploy, err := k.clientset.AppsV1().Deployments(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
@@ -35,6 +37,7 @@ func (k *Kubernetes) DeploymentGet(ctx context.Context, namespace, name string) 
 	return deploy.String(), nil
 }
 
+// DeploymentDelete deletes a deployment.
 func (k *Kubernetes) DeploymentDelete(ctx context.Context, namespace, name string) (string, error) {
 	err := k.clientset.AppsV1().Deployments(namespace).Delete(ctx, name, metav1.DeleteOptions{})
 	if err != nil {
@@ -43,6 +46,7 @@ func (k *Kubernetes) DeploymentDelete(ctx context.Context, namespace, name strin
 	return "Deployment deleted successfully", nil
 }
 
+// DeploymentScale scales a deployment.
 func (k *Kubernetes) DeploymentScale(ctx context.Context, namespace, name string, replicas int32) (string, error) {
 	deploy, err := k.clientset.AppsV1().Deployments(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
@@ -57,6 +61,7 @@ func (k *Kubernetes) DeploymentScale(ctx context.Context, namespace, name string
 	return fmt.Sprintf("Deployment %s/%s scaled to %d replicas", namespace, name, replicas), nil
 }
 
+// AnalyzeDeployments analyzes the deployments and returns a list of failures.
 func (k *Kubernetes) AnalyzeDeployments(ctx context.Context, namespace string) (string, error) {
 	kind := "Deployment"
 	apiDoc := K8sApiReference{

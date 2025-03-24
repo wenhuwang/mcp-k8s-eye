@@ -8,7 +8,11 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/wenhuwang/mcp-k8s-eye/pkg/mcp"
-	"go.etcd.io/etcd/version"
+)
+
+var (
+	name    = "mcp-k8s-eye"
+	version = "0.0.2"
 )
 
 var rootCmd = &cobra.Command{
@@ -26,10 +30,10 @@ var rootCmd = &cobra.Command{
   # TODO: add more examples`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if viper.GetBool("version") {
-			fmt.Println(version.Version)
+			fmt.Println(version)
 			return
 		}
-		mcpServer, err := mcp.NewServer()
+		mcpServer, err := mcp.NewServer(name, version)
 		if err != nil {
 			panic(err)
 		}

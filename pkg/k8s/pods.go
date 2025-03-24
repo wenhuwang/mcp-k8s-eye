@@ -14,6 +14,7 @@ import (
 	"k8s.io/client-go/tools/remotecommand"
 )
 
+// PodList lists all pods in a namespace.
 func (k *Kubernetes) PodList(ctx context.Context, namespace string) (string, error) {
 	podList, err := k.clientset.CoreV1().Pods(namespace).List(ctx, metav1.ListOptions{})
 	if err != nil {
@@ -26,6 +27,7 @@ func (k *Kubernetes) PodList(ctx context.Context, namespace string) (string, err
 	return podList.String(), nil
 }
 
+// PodGet gets a pod.
 func (k *Kubernetes) PodGet(ctx context.Context, namespace, name string) (string, error) {
 	pod, err := k.clientset.CoreV1().Pods(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
@@ -38,6 +40,7 @@ func (k *Kubernetes) PodGet(ctx context.Context, namespace, name string) (string
 	return pod.String(), nil
 }
 
+// PodDelete deletes a pod.
 func (k *Kubernetes) PodDelete(ctx context.Context, namespace, name string) (string, error) {
 	err := k.clientset.CoreV1().Pods(namespace).Delete(ctx, name, metav1.DeleteOptions{})
 	if err != nil {
@@ -46,6 +49,7 @@ func (k *Kubernetes) PodDelete(ctx context.Context, namespace, name string) (str
 	return "Pod deleted successfully", nil
 }
 
+// PodLogs returns the logs of a pod.
 func (k *Kubernetes) PodLogs(ctx context.Context, namespace, name string) (string, error) {
 	tailLines := int64(200)
 	req := k.clientset.CoreV1().Pods(namespace).GetLogs(name, &v1.PodLogOptions{
@@ -63,6 +67,7 @@ func (k *Kubernetes) PodLogs(ctx context.Context, namespace, name string) (strin
 	return string(rawData), nil
 }
 
+// PodExec executes a command in a pod and returns the output.
 func (k *Kubernetes) PodExec(ctx context.Context, namespace, name, command string) (string, error) {
 	req := k.clientset.CoreV1().RESTClient().Post().
 		Resource("pods").
@@ -99,6 +104,7 @@ func (k *Kubernetes) PodExec(ctx context.Context, namespace, name, command strin
 	return stdout.String(), nil
 }
 
+// AnalyzePods analyzes the pods and returns a list of failures.
 func (k *Kubernetes) AnalyzePods(ctx context.Context, namespace string) (string, error) {
 	podList, err := k.clientset.CoreV1().Pods(namespace).List(ctx, metav1.ListOptions{})
 	if err != nil {
@@ -139,7 +145,8 @@ func (k *Kubernetes) AnalyzePods(ctx context.Context, namespace string) (string,
 		}
 	}
 
-	var results []common.Result
+	// 初始化为空切片而不是 nil
+	results := make([]common.Result, 0)
 	for key, value := range preAnalysis {
 		result := common.Result{
 			Kind:  "Pod",
@@ -160,6 +167,7 @@ func (k *Kubernetes) AnalyzePods(ctx context.Context, namespace string) (string,
 	return string(jsonData), nil
 }
 
+// analyzeContainerStatusFailures analyzes the container statuses and returns a list of failures.
 func (k *Kubernetes) analyzeContainerStatusFailures(statuses []v1.ContainerStatus, name string, namespace string, statusPhase string) []common.Failure {
 	var failures []common.Failure
 

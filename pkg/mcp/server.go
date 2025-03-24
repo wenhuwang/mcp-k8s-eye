@@ -12,11 +12,11 @@ type Server struct {
 	k8s    *k8s.Kubernetes
 }
 
-func NewServer() (*Server, error) {
+func NewServer(name, version string) (*Server, error) {
 	s := &Server{
 		server: server.NewMCPServer(
-			"mcp-k8s-eye",
-			"v0.0.2",
+			name,
+			version,
 			server.WithResourceCapabilities(true, true),
 			server.WithPromptCapabilities(true),
 			server.WithLogging(),

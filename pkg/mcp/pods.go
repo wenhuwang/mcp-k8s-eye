@@ -116,7 +116,7 @@ func (s *Server) podLogs(ctx context.Context, ctr mcp.CallToolRequest) (*mcp.Cal
 	pod := ctr.Params.Arguments["pod"].(string)
 	res, err := s.k8s.PodLogs(ctx, ns, pod)
 	if err != nil {
-		return mcp.NewToolResultError(fmt.Sprintf("failed to get logs for pod %s/%s: %v")), nil
+		return mcp.NewToolResultError(fmt.Sprintf("failed to get logs for pod %s/%s: %v", ns, pod, err)), nil
 	}
 	return mcp.NewToolResultText(res), nil
 }

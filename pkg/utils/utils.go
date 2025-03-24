@@ -8,7 +8,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-func FetchLatestEvent(kubernetesClient *kubernetes.Clientset, namespace string, name string) (*v1.Event, error) {
+func FetchLatestEvent(kubernetesClient kubernetes.Interface, namespace string, name string) (*v1.Event, error) {
 
 	// get the list of events
 	events, err := kubernetesClient.CoreV1().Events(namespace).List(context.TODO(),
@@ -36,7 +36,7 @@ func FetchLatestEvent(kubernetesClient *kubernetes.Clientset, namespace string, 
 	return latestEvent, nil
 }
 
-func GetParent(client *kubernetes.Clientset, meta metav1.ObjectMeta) (string, bool) {
+func GetParent(client kubernetes.Interface, meta metav1.ObjectMeta) (string, bool) {
 	if meta.OwnerReferences != nil {
 		for _, owner := range meta.OwnerReferences {
 			switch owner.Kind {

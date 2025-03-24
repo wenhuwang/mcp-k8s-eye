@@ -10,6 +10,11 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 )
 
+var (
+	kubectlLastAppliedConfiguration = "kubectl.kubernetes.io/last-applied-configuration"
+	deploymentRevisionAnnotation    = "deployment.kubernetes.io/revision"
+)
+
 // ResourceCleaner clean kubernetes resource default fields
 type ResourceCleaner struct {
 }
@@ -71,64 +76,64 @@ func (rc *ResourceCleaner) cleanObjectMeta(obj runtime.Object) {
 func (rc *ResourceCleaner) cleanPod(pod *corev1.Pod) {
 	pod.Status = corev1.PodStatus{}
 
-	delete(pod.Annotations, "kubectl.kubernetes.io/last-applied-configuration")
+	delete(pod.Annotations, kubectlLastAppliedConfiguration)
 }
 
 // cleanDeployment clean Deployment specific fields
 func (rc *ResourceCleaner) cleanDeployment(deploy *appsv1.Deployment) {
 	deploy.Status = appsv1.DeploymentStatus{}
 
-	delete(deploy.Annotations, "deployment.kubernetes.io/revision")
-	delete(deploy.Annotations, "kubectl.kubernetes.io/last-applied-configuration")
+	delete(deploy.Annotations, deploymentRevisionAnnotation)
+	delete(deploy.Annotations, kubectlLastAppliedConfiguration)
 }
 
 // cleanStatefulSet clean StatefulSet specific fields
 func (rc *ResourceCleaner) cleanStatefulSet(sts *appsv1.StatefulSet) {
 	sts.Status = appsv1.StatefulSetStatus{}
 
-	delete(sts.Annotations, "kubectl.kubernetes.io/last-applied-configuration")
+	delete(sts.Annotations, kubectlLastAppliedConfiguration)
 }
 
 // cleanDaemonSet clean DaemonSet specific fields
 func (rc *ResourceCleaner) cleanDaemonSet(ds *appsv1.DaemonSet) {
 	ds.Status = appsv1.DaemonSetStatus{}
 
-	delete(ds.Annotations, "kubectl.kubernetes.io/last-applied-configuration")
+	delete(ds.Annotations, kubectlLastAppliedConfiguration)
 }
 
 // cleanService clean Service specific fields
 func (rc *ResourceCleaner) cleanService(svc *corev1.Service) {
 	svc.Status = corev1.ServiceStatus{}
 
-	delete(svc.Annotations, "kubectl.kubernetes.io/last-applied-configuration")
+	delete(svc.Annotations, kubectlLastAppliedConfiguration)
 }
 
 // cleanIngress clean Ingress specific fields
 func (rc *ResourceCleaner) cleanIngress(ing *networkingv1.Ingress) {
 	ing.Status = networkingv1.IngressStatus{}
 
-	delete(ing.Annotations, "kubectl.kubernetes.io/last-applied-configuration")
+	delete(ing.Annotations, kubectlLastAppliedConfiguration)
 }
 
 // cleanConfigMap clean ConfigMap specific fields
 func (rc *ResourceCleaner) cleanConfigMap(cm *corev1.ConfigMap) {
 	// ConfigMap has no special default fields to clean
 	// just clean common metadata
-	delete(cm.Annotations, "kubectl.kubernetes.io/last-applied-configuration")
+	delete(cm.Annotations, kubectlLastAppliedConfiguration)
 }
 
 // cleanSecret clean Secret specific fields
 func (rc *ResourceCleaner) cleanSecret(secret *corev1.Secret) {
 	// Secret has no special default fields to clean
 	// just clean common metadata
-	delete(secret.Annotations, "kubectl.kubernetes.io/last-applied-configuration")
+	delete(secret.Annotations, kubectlLastAppliedConfiguration)
 }
 
 // cleanPVC clean PersistentVolumeClaim specific fields
 func (rc *ResourceCleaner) cleanPVC(pvc *corev1.PersistentVolumeClaim) {
 	pvc.Status = corev1.PersistentVolumeClaimStatus{}
 
-	delete(pvc.Annotations, "kubectl.kubernetes.io/last-applied-configuration")
+	delete(pvc.Annotations, kubectlLastAppliedConfiguration)
 }
 
 // CleanList clean default fields in resource list
