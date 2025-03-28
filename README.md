@@ -23,12 +23,13 @@ go build -o mcp-k8s-eye
     "kubernetes": {
       "command": "YOUR mcp-k8s-eye PATH",
       "env": {
-        "HOME": "YOUR HOME DIR"
+        "HOME": "USER HOME DIR"
       },
     }
   }
 }
 ```
+HOME ENV is used to set the HOME directory for kubeconfig file.
 
 ## Features
 

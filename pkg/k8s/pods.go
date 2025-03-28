@@ -145,7 +145,6 @@ func (k *Kubernetes) AnalyzePods(ctx context.Context, namespace string) (string,
 		}
 	}
 
-	// 初始化为空切片而不是 nil
 	results := make([]common.Result, 0)
 	for key, value := range preAnalysis {
 		result := common.Result{
