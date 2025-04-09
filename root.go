@@ -12,7 +12,7 @@ import (
 
 var (
 	name    = "mcp-k8s-eye"
-	version = "0.1.1"
+	version = "0.2.1"
 )
 
 var rootCmd = &cobra.Command{
