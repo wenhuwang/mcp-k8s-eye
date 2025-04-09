@@ -3,15 +3,20 @@ package k8s
 import (
 	openapi_v2 "github.com/google/gnostic/openapiv2"
 	"k8s.io/client-go/discovery"
+	"k8s.io/client-go/discovery/cached/memory"
+	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/restmapper"
 )
 
 type Kubernetes struct {
-	config          *rest.Config
-	clientset       kubernetes.Interface
-	discoveryClient *discovery.DiscoveryClient
-	openapiSchema   *openapi_v2.Document
+	config                      *rest.Config
+	clientset                   kubernetes.Interface
+	discoveryClient             discovery.DiscoveryInterface
+	dynamicClient               dynamic.Interface
+	deferredDiscoveryRESTMapper *restmapper.DeferredDiscoveryRESTMapper
+	openapiSchema               *openapi_v2.Document
 }
 
 // NewKubernetes creates a new Kubernetes client
@@ -26,10 +31,17 @@ func NewKubernetes() (*Kubernetes, error) {
 		return nil, err
 	}
 
+	dynamicClient, err := dynamic.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+
 	return &Kubernetes{
-		config:          config,
-		clientset:       clientset,
-		discoveryClient: discoveryClient,
-		openapiSchema:   &openapi_v2.Document{},
+		config:                      config,
+		clientset:                   clientset,
+		discoveryClient:             discoveryClient,
+		dynamicClient:               dynamicClient,
+		deferredDiscoveryRESTMapper: restmapper.NewDeferredDiscoveryRESTMapper(memory.NewMemCacheClient(discoveryClient)),
+		openapiSchema:               &openapi_v2.Document{},
 	}, nil
 }

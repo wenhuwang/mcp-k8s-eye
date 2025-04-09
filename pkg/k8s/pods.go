@@ -14,41 +14,6 @@ import (
 	"k8s.io/client-go/tools/remotecommand"
 )
 
-// PodList lists all pods in a namespace.
-func (k *Kubernetes) PodList(ctx context.Context, namespace string) (string, error) {
-	podList, err := k.clientset.CoreV1().Pods(namespace).List(ctx, metav1.ListOptions{})
-	if err != nil {
-		return "", err
-	}
-
-	cleaner := utils.NewResourceCleaner()
-	cleaner.CleanList(podList)
-
-	return podList.String(), nil
-}
-
-// PodGet gets a pod.
-func (k *Kubernetes) PodGet(ctx context.Context, namespace, name string) (string, error) {
-	pod, err := k.clientset.CoreV1().Pods(namespace).Get(ctx, name, metav1.GetOptions{})
-	if err != nil {
-		return "", err
-	}
-
-	cleaner := utils.NewResourceCleaner()
-	cleaner.Clean(pod)
-
-	return pod.String(), nil
-}
-
-// PodDelete deletes a pod.
-func (k *Kubernetes) PodDelete(ctx context.Context, namespace, name string) (string, error) {
-	err := k.clientset.CoreV1().Pods(namespace).Delete(ctx, name, metav1.DeleteOptions{})
-	if err != nil {
-		return "", err
-	}
-	return "Pod deleted successfully", nil
-}
-
 // PodLogs returns the logs of a pod.
 func (k *Kubernetes) PodLogs(ctx context.Context, namespace, name string) (string, error) {
 	tailLines := int64(200)

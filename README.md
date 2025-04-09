@@ -29,18 +29,14 @@ go build -o mcp-k8s-eye
   }
 }
 ```
-HOME ENV is used to set the HOME directory for kubeconfig file.
+`env.HOME` is used to set the HOME directory for kubeconfig file.
 
 ## Features
 
 - [x] Connect to a Kubernetes cluster
-- [x] Pod management capabilities (list, get, exec, logs, delete)
-- [x] Deployment management capabilities (list, get, scale, delete)
-- [x] Service management capabilities (list, get, delete)
-- [ ] StatefulSet management capabilities (list, get, delete)
-- [ ] DaemonSet management capabilities (list, get, delete)
-- [ ] Ingress management capabilities (list, get, delete)
-- [ ] Node management capabilities (list, get, delete)
+- [x] **Generic Kubernetes Resources** management capabilities (list, get, delete)
+- [x] Pod management capabilities (exec, logs)
+- [x] Deployment management capabilities (scale)
 - [x] Analyze pods
 - [x] Analyze services
 - [x] Analyze deployments

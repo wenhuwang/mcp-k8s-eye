@@ -11,39 +11,6 @@ import (
 func (s *Server) initPods() []server.ServerTool {
 	return []server.ServerTool{
 		{
-			Tool: mcp.NewTool("pod list",
-				mcp.WithDescription("list pods in a namespace or all namespaces"),
-				mcp.WithString("namespace",
-					mcp.Description("the namespace to list pods in"),
-				),
-			),
-			Handler: s.podList,
-		},
-		{
-			Tool: mcp.NewTool("pod get",
-				mcp.WithDescription("get pod details"),
-				mcp.WithString("namespace",
-					mcp.Description("the namespace to get pods in"),
-				),
-				mcp.WithString("pod",
-					mcp.Description("the pod to get"),
-				),
-			),
-			Handler: s.podGet,
-		},
-		{
-			Tool: mcp.NewTool("pod delete",
-				mcp.WithDescription("delete pod"),
-				mcp.WithString("namespace",
-					mcp.Description("the namespace to get pods in"),
-				),
-				mcp.WithString("pod",
-					mcp.Description("the pod to get"),
-				),
-			),
-			Handler: s.podDelete,
-		},
-		{
 			Tool: mcp.NewTool("pod logs",
 				mcp.WithDescription("get pod logs"),
 				mcp.WithString("namespace",
@@ -80,35 +47,6 @@ func (s *Server) initPods() []server.ServerTool {
 			Handler: s.podAnalyze,
 		},
 	}
-}
-
-func (s *Server) podList(ctx context.Context, ctr mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-	ns := ctr.Params.Arguments["namespace"].(string)
-	res, err := s.k8s.PodList(ctx, ns)
-	if err != nil {
-		return mcp.NewToolResultError(fmt.Sprintf("failed to list pods in namespace %s: %v", ns, err)), nil
-	}
-	return mcp.NewToolResultText(res), nil
-}
-
-func (s *Server) podGet(ctx context.Context, ctr mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-	ns := ctr.Params.Arguments["namespace"].(string)
-	pod := ctr.Params.Arguments["pod"].(string)
-	res, err := s.k8s.PodGet(ctx, ns, pod)
-	if err != nil {
-		return mcp.NewToolResultError(fmt.Sprintf("failed to get pod %s/%s: %v", ns, pod, err)), nil
-	}
-	return mcp.NewToolResultText(res), nil
-}
-
-func (s *Server) podDelete(ctx context.Context, ctr mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-	ns := ctr.Params.Arguments["namespace"].(string)
-	pod := ctr.Params.Arguments["pod"].(string)
-	res, err := s.k8s.PodDelete(ctx, ns, pod)
-	if err != nil {
-		return mcp.NewToolResultError(fmt.Sprintf("failed to delete pod %s/%s: %v", ns, pod, err)), nil
-	}
-	return mcp.NewToolResultText(res), nil
 }
 
 func (s *Server) podLogs(ctx context.Context, ctr mcp.CallToolRequest) (*mcp.CallToolResult, error) {
