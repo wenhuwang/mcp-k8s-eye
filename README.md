@@ -31,6 +31,9 @@ go build -o mcp-k8s-eye
 ```
 `env.HOME` is used to set the HOME directory for kubeconfig file.
 
+### cursor tools
+![cursor tools](./images/mcp-server-tools.png)
+
 ## Features
 
 - [x] Connect to a Kubernetes cluster
