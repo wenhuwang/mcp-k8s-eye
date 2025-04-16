@@ -1,6 +1,8 @@
 package common
 
 import (
+	"context"
+
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	networkv1 "k8s.io/api/networking/v1"
@@ -27,10 +29,17 @@ type Result struct {
 type Failure struct {
 	Text          string
 	KubernetesDoc string
-	Sensitive     []Sensitive
+	// Sensitive     []Sensitive
 }
 
 type Sensitive struct {
 	Unmasked string
 	Masked   string
+}
+
+type Request struct {
+	Context       context.Context
+	Namespace     string
+	Name          string
+	LabelSelector string
 }

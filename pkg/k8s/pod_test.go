@@ -113,7 +113,7 @@ func TestAnalyzePods(t *testing.T) {
 		k := newTestKubernetes(clientset, nil)
 
 		// Execute
-		result, err := k.AnalyzePods(context.Background(), "test-namespace")
+		result, err := k.AnalyzePod(context.Background(), "test-namespace")
 
 		// Verify
 		assert.NoError(t, err, "Should not return an error")
@@ -127,7 +127,7 @@ func TestAnalyzePods(t *testing.T) {
 		k := newTestKubernetes(clientset, nil)
 
 		// Execute
-		result, err := k.AnalyzePods(context.Background(), "test-namespace")
+		result, err := k.AnalyzePod(context.Background(), "test-namespace")
 
 		// Verify
 		assert.NoError(t, err, "Should not return an error")

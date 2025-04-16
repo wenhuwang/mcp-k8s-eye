@@ -8,7 +8,7 @@ import (
 	"github.com/mark3labs/mcp-go/server"
 )
 
-func (s *Server) initDeployments() []server.ServerTool {
+func (s *Server) initDeployment() []server.ServerTool {
 	return []server.ServerTool{
 		{
 			Tool: mcp.NewTool("deployment scale",
@@ -50,7 +50,7 @@ func (s *Server) deploymentScale(ctx context.Context, ctr mcp.CallToolRequest) (
 
 func (s *Server) deploymentAnalyze(ctx context.Context, ctr mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	ns := ctr.Params.Arguments["namespace"].(string)
-	res, err := s.k8s.AnalyzeDeployments(ctx, ns)
+	res, err := s.k8s.AnalyzeDeployment(ctx, ns)
 	if err != nil {
 		return mcp.NewToolResultError(fmt.Sprintf("failed to analyze deployments in namespace %s: %v", ns, err)), nil
 	}

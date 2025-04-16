@@ -26,7 +26,7 @@ func (k *Kubernetes) DeploymentScale(ctx context.Context, namespace, name string
 }
 
 // AnalyzeDeployments analyzes the deployments and returns a list of failures.
-func (k *Kubernetes) AnalyzeDeployments(ctx context.Context, namespace string) (string, error) {
+func (k *Kubernetes) AnalyzeDeployment(ctx context.Context, namespace string) (string, error) {
 	kind := "Deployment"
 	apiDoc := K8sApiReference{
 		Kind: kind,

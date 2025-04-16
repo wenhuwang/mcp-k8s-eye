@@ -8,7 +8,7 @@ import (
 	"github.com/mark3labs/mcp-go/server"
 )
 
-func (s *Server) initServices() []server.ServerTool {
+func (s *Server) initService() []server.ServerTool {
 	return []server.ServerTool{
 		{
 			Tool: mcp.NewTool("service analyze",
@@ -24,7 +24,7 @@ func (s *Server) initServices() []server.ServerTool {
 
 func (s *Server) serviceAnalyze(ctx context.Context, ctr mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	ns := ctr.Params.Arguments["namespace"].(string)
-	res, err := s.k8s.AnalyzeServices(ctx, ns)
+	res, err := s.k8s.AnalyzeService(ctx, ns)
 	if err != nil {
 		return mcp.NewToolResultError(fmt.Sprintf("failed to analyze services in namespace %s: %v", ns, err)), nil
 	}

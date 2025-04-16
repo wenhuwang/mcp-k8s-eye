@@ -70,7 +70,7 @@ func (k *Kubernetes) PodExec(ctx context.Context, namespace, name, command strin
 }
 
 // AnalyzePods analyzes the pods and returns a list of failures.
-func (k *Kubernetes) AnalyzePods(ctx context.Context, namespace string) (string, error) {
+func (k *Kubernetes) AnalyzePod(ctx context.Context, namespace string) (string, error) {
 	podList, err := k.clientset.CoreV1().Pods(namespace).List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return "", err
@@ -88,8 +88,7 @@ func (k *Kubernetes) AnalyzePods(ctx context.Context, namespace string) (string,
 				if containerStatus.Type == v1.PodScheduled && containerStatus.Reason == "Unschedulable" {
 					if containerStatus.Message != "" {
 						failures = append(failures, common.Failure{
-							Text:      containerStatus.Message,
-							Sensitive: []common.Sensitive{},
+							Text: containerStatus.Message,
 						})
 					}
 				}
@@ -147,20 +146,17 @@ func (k *Kubernetes) analyzeContainerStatusFailures(statuses []v1.ContainerStatu
 				}
 				if utils.IsEvtErrorReason(evt.Reason) && evt.Message != "" {
 					failures = append(failures, common.Failure{
-						Text:      evt.Message,
-						Sensitive: []common.Sensitive{},
+						Text: evt.Message,
 					})
 				}
 			} else if containerStatus.State.Waiting.Reason == "CrashLoopBackOff" && containerStatus.LastTerminationState.Terminated != nil {
 				// This represents container that is in CrashLoopBackOff state due to conditions such as OOMKilled
 				failures = append(failures, common.Failure{
-					Text:      fmt.Sprintf("the last termination reason is %s container=%s pod=%s", containerStatus.LastTerminationState.Terminated.Reason, containerStatus.Name, name),
-					Sensitive: []common.Sensitive{},
+					Text: fmt.Sprintf("the last termination reason is %s container=%s pod=%s", containerStatus.LastTerminationState.Terminated.Reason, containerStatus.Name, name),
 				})
 			} else if utils.IsErrorReason(containerStatus.State.Waiting.Reason) && containerStatus.State.Waiting.Message != "" {
 				failures = append(failures, common.Failure{
-					Text:      containerStatus.State.Waiting.Message,
-					Sensitive: []common.Sensitive{},
+					Text: containerStatus.State.Waiting.Message,
 				})
 			}
 		} else {
@@ -173,8 +169,7 @@ func (k *Kubernetes) analyzeContainerStatusFailures(statuses []v1.ContainerStatu
 				}
 				if evt.Reason == "Unhealthy" && evt.Message != "" {
 					failures = append(failures, common.Failure{
-						Text:      evt.Message,
-						Sensitive: []common.Sensitive{},
+						Text: evt.Message,
 					})
 				}
 			}

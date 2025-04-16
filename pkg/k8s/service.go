@@ -12,43 +12,8 @@ import (
 	"k8s.io/client-go/tools/leaderelection/resourcelock"
 )
 
-// ServiceList lists all services in a namespace.
-func (k *Kubernetes) ServiceList(ctx context.Context, namespace string) (string, error) {
-	svcList, err := k.clientset.CoreV1().Services(namespace).List(ctx, metav1.ListOptions{})
-	if err != nil {
-		return "", err
-	}
-
-	cleaner := utils.NewResourceCleaner()
-	cleaner.CleanList(svcList)
-
-	return svcList.String(), nil
-}
-
-// ServiceGet gets a service.
-func (k *Kubernetes) ServiceGet(ctx context.Context, namespace, name string) (string, error) {
-	svc, err := k.clientset.CoreV1().Services(namespace).Get(ctx, name, metav1.GetOptions{})
-	if err != nil {
-		return "", err
-	}
-
-	cleaner := utils.NewResourceCleaner()
-	cleaner.Clean(svc)
-
-	return svc.String(), nil
-}
-
-// ServiceDelete deletes a service.
-func (k *Kubernetes) ServiceDelete(ctx context.Context, namespace, name string) (string, error) {
-	err := k.clientset.CoreV1().Services(namespace).Delete(ctx, name, metav1.DeleteOptions{})
-	if err != nil {
-		return "", err
-	}
-	return "Service deleted successfully", nil
-}
-
 // AnalyzeServices analyzes the services and returns a list of failures.
-func (k *Kubernetes) AnalyzeServices(ctx context.Context, namespace string) (string, error) {
+func (k *Kubernetes) AnalyzeService(ctx context.Context, namespace string) (string, error) {
 	kind := "Service"
 	apiDoc := K8sApiReference{
 		Kind: kind,
@@ -83,7 +48,6 @@ func (k *Kubernetes) AnalyzeServices(ctx context.Context, namespace string) (str
 				failures = append(failures, common.Failure{
 					Text:          fmt.Sprintf("Service has no endpoints, unexpected label: %s=%s", k, v),
 					KubernetesDoc: doc,
-					Sensitive:     []common.Sensitive{},
 				})
 			}
 
@@ -106,7 +70,6 @@ func (k *Kubernetes) AnalyzeServices(ctx context.Context, namespace string) (str
 				failures = append(failures, common.Failure{
 					Text:          fmt.Sprintf("Service has not ready endpoints, pods: %s, unexpected: %d", pods, count),
 					KubernetesDoc: doc,
-					Sensitive:     []common.Sensitive{},
 				})
 			}
 		}

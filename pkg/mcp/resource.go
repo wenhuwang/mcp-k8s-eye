@@ -8,7 +8,7 @@ import (
 	"github.com/mark3labs/mcp-go/server"
 )
 
-func (s *Server) initResources() []server.ServerTool {
+func (s *Server) initResource() []server.ServerTool {
 	return []server.ServerTool{
 		{
 			Tool: mcp.NewTool("resource list",

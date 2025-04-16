@@ -29,10 +29,12 @@ func NewServer(name, version string) (*Server, error) {
 	s.k8s = k8s
 
 	s.server.AddTools(slices.Concat(
-		s.initResources(),
-		s.initPods(),
-		s.initDeployments(),
-		s.initServices(),
+		s.initResource(),
+		s.initPod(),
+		s.initDeployment(),
+		s.initService(),
+		s.initStatefulSet(),
+		s.initNode(),
 	)...)
 
 	return s, nil

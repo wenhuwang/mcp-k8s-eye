@@ -8,7 +8,7 @@ import (
 	"github.com/mark3labs/mcp-go/server"
 )
 
-func (s *Server) initPods() []server.ServerTool {
+func (s *Server) initPod() []server.ServerTool {
 	return []server.ServerTool{
 		{
 			Tool: mcp.NewTool("pod logs",
@@ -72,7 +72,7 @@ func (s *Server) podExec(ctx context.Context, ctr mcp.CallToolRequest) (*mcp.Cal
 
 func (s *Server) podAnalyze(ctx context.Context, ctr mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	ns := ctr.Params.Arguments["namespace"].(string)
-	res, err := s.k8s.AnalyzePods(ctx, ns)
+	res, err := s.k8s.AnalyzePod(ctx, ns)
 	if err != nil {
 		return mcp.NewToolResultError(fmt.Sprintf("failed to analyze pods in namespace %s: %v", ns, err)), nil
 	}
