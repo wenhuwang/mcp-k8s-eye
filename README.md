@@ -44,7 +44,6 @@ go build -o mcp-k8s-eye
 - [x] Analyze services
 - [x] Analyze deployments
 - [x] Analyze statefulsets
-- [ ] Analyze daemonsets
-- [ ] Analyze ingress
+- [x] Analyze ingress
 - [x] Analyze nodes
 - [ ] Analyze cluster
