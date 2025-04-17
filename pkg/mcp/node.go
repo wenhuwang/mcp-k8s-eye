@@ -22,7 +22,10 @@ func (s *Server) initNode() []server.ServerTool {
 	}
 }
 func (s *Server) nodeAnalyze(ctx context.Context, ctr mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-	name := ctr.Params.Arguments["name"].(string)
+	var name string
+	if v, ok := ctr.Params.Arguments["name"].(string); ok {
+		name = v
+	}
 	res, err := s.k8s.AnalyzeNode(ctx, name)
 	if err != nil {
 		return mcp.NewToolResultError(fmt.Sprintf("failed to analyze node %s: %v", name, err)), nil
