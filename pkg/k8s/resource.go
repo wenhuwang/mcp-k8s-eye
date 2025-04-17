@@ -10,6 +10,7 @@ import (
 )
 
 func (k *Kubernetes) ResourceList(ctx context.Context, kind, namespace string) (string, error) {
+	kind = utils.Capitalize(kind)
 	gv := utils.GetGroupVersionForKind(kind)
 	gvk := gv.WithKind(kind)
 	gvr, err := k.gvrFor(gvk)
@@ -34,6 +35,7 @@ func (k *Kubernetes) ResourceList(ctx context.Context, kind, namespace string) (
 }
 
 func (k *Kubernetes) ResourceGet(ctx context.Context, kind, namespace, name string) (string, error) {
+	kind = utils.Capitalize(kind)
 	gv := utils.GetGroupVersionForKind(kind)
 	gvk := gv.WithKind(kind)
 	gvr, err := k.gvrFor(gvk)
@@ -59,6 +61,7 @@ func (k *Kubernetes) ResourceGet(ctx context.Context, kind, namespace, name stri
 }
 
 func (k *Kubernetes) ResourceDelete(ctx context.Context, kind, namespace, name string) (string, error) {
+	kind = utils.Capitalize(kind)
 	gv := utils.GetGroupVersionForKind(kind)
 	gvk := gv.WithKind(kind)
 	gvr, err := k.gvrFor(gvk)
