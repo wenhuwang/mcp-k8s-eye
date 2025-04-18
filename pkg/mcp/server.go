@@ -44,3 +44,8 @@ func NewServer(name, version string) (*Server, error) {
 func (s *Server) ServeStdio() error {
 	return server.ServeStdio(s.server)
 }
+
+func (s *Server) ServeSSE() *server.SSEServer {
+	options := []server.SSEOption{}
+	return server.NewSSEServer(s.server, options...)
+}

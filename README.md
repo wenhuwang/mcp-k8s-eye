@@ -35,10 +35,11 @@ go build -o mcp-k8s-eye
 ```
 
 ## Usage
+### STDIO
 ```
 {
   "mcpServers": {
-    "kubernetes": {
+    "k8s eye": {
       "command": "YOUR mcp-k8s-eye PATH",
       "env": {
         "HOME": "USER HOME DIR"
@@ -48,6 +49,21 @@ go build -o mcp-k8s-eye
 }
 ```
 `env.HOME` is used to set the HOME directory for kubeconfig file.
+
+### SSE
+1. start your mcp sse server
+2. config your mcp server
+
+```
+{
+  "mcpServers": {
+    "k8s eye": {
+      "url": "http://localhost:8080/sse",
+      "env": {}
+    }
+  }
+}
+```
 
 ### cursor tools
 ![cursor tools](./images/mcp-server-tools.png)
