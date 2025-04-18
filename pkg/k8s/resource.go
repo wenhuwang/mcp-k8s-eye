@@ -3,10 +3,15 @@ package k8s
 import (
 	"context"
 	"fmt"
+	"regexp"
+	"strings"
 
+	"github.com/wenhuwang/mcp-k8s-eye/pkg/common"
 	"github.com/wenhuwang/mcp-k8s-eye/pkg/utils"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/apimachinery/pkg/util/yaml"
 )
 
 func (k *Kubernetes) ResourceList(ctx context.Context, kind, namespace string) (string, error) {
@@ -84,6 +89,46 @@ func (k *Kubernetes) ResourceDelete(ctx context.Context, kind, namespace, name s
 	}
 
 	return fmt.Sprintf("Resource %s/%s deleted successfully", namespace, name), nil
+}
+
+func (k *Kubernetes) ResourceCreateOrUpdate(ctx context.Context, resource string) (string, error) {
+	separator := regexp.MustCompile(`\r?\n---\r?\n`)
+	resources := separator.Split(resource, -1)
+	var unstructuredObjects []*unstructured.Unstructured
+	for _, r := range resources {
+		var obj *unstructured.Unstructured
+		if err := yaml.NewYAMLToJSONDecoder(strings.NewReader(r)).Decode(&obj); err != nil {
+			return "", err
+		}
+		unstructuredObjects = append(unstructuredObjects, obj)
+	}
+
+	return k.resourceCreateOrUpdate(ctx, unstructuredObjects)
+}
+
+func (k *Kubernetes) resourceCreateOrUpdate(ctx context.Context, resources []*unstructured.Unstructured) (string, error) {
+	for _, obj := range resources {
+		gvk := obj.GroupVersionKind()
+		gvr, err := k.gvrFor(gvk)
+		if err != nil {
+			return "", err
+		}
+		namespace := obj.GetNamespace()
+		if isNamespaced, err := k.isNamespaced(gvk); err == nil && isNamespaced {
+			namespace = utils.NamespaceOrDefault(namespace)
+		}
+		_, err = k.dynamicClient.Resource(gvr).Namespace(namespace).Apply(ctx, obj.GetName(), obj, metav1.ApplyOptions{
+			FieldManager: common.ProjectName,
+		})
+		if err != nil {
+			return "", err
+		}
+		// Clear the cache to ensure the next operation is performed on the latest exposed APIs
+		if gvk.Kind == "CustomResourceDefinition" {
+			k.deferredDiscoveryRESTMapper.Reset()
+		}
+	}
+	return fmt.Sprintf("All of the resource created/updated successfully"), nil
 }
 
 func (k *Kubernetes) gvrFor(gvk schema.GroupVersionKind) (schema.GroupVersionResource, error) {

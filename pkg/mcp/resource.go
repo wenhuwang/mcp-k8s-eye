@@ -60,6 +60,16 @@ func (s *Server) initResource() []server.ServerTool {
 			),
 			Handler: s.resourceDelete,
 		},
+		{
+			Tool: mcp.NewTool("resource create or update",
+				mcp.WithDescription("create or update resource"),
+				mcp.WithString("resource",
+					mcp.Description("the resource to create or update"),
+					mcp.Required(),
+				),
+			),
+			Handler: s.resourceCreateOrUpdate,
+		},
 	}
 }
 
@@ -91,6 +101,15 @@ func (s *Server) resourceDelete(ctx context.Context, ctr mcp.CallToolRequest) (*
 	res, err := s.k8s.ResourceDelete(ctx, kind, ns, name)
 	if err != nil {
 		return mcp.NewToolResultError(fmt.Sprintf("failed to delete resource %s/%s: %v", ns, name, err)), nil
+	}
+	return mcp.NewToolResultText(res), nil
+}
+
+func (s *Server) resourceCreateOrUpdate(ctx context.Context, ctr mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	resource := ctr.Params.Arguments["resource"].(string)
+	res, err := s.k8s.ResourceCreateOrUpdate(ctx, resource)
+	if err != nil {
+		return mcp.NewToolResultError(fmt.Sprintf("failed to create/update resource: %v", err)), nil
 	}
 	return mcp.NewToolResultText(res), nil
 }

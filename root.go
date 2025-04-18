@@ -7,12 +7,8 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/wenhuwang/mcp-k8s-eye/pkg/common"
 	"github.com/wenhuwang/mcp-k8s-eye/pkg/mcp"
-)
-
-var (
-	name    = "mcp-k8s-eye"
-	version = "0.2.1"
 )
 
 var rootCmd = &cobra.Command{
@@ -30,10 +26,10 @@ var rootCmd = &cobra.Command{
   # TODO: add more examples`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if viper.GetBool("version") {
-			fmt.Println(version)
+			fmt.Println(common.Version)
 			return
 		}
-		mcpServer, err := mcp.NewServer(name, version)
+		mcpServer, err := mcp.NewServer(common.ProjectName, common.Version)
 		if err != nil {
 			panic(err)
 		}
