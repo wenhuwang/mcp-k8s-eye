@@ -37,7 +37,7 @@ go build -o mcp-k8s-eye
 ## Features
 
 - [x] Connect to a Kubernetes cluster
-- [x] **Generic Kubernetes Resources** management capabilities (list, get, delete)
+- [x] **Generic Kubernetes Resources** management capabilities (list, get, create, update, delete)
 - [x] Pod management capabilities (exec, logs)
 - [x] Deployment management capabilities (scale)
 - [x] Analyze pods
