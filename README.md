@@ -2,6 +2,21 @@
 
 mcp-k8s-eye is a tool that can manage kubernetes cluster and analyze workload status.
 
+## Features
+
+- [x] Connect to a Kubernetes cluster
+- [x] **Generic Kubernetes Resources** management capabilities (list, get, create, update, delete)
+- [x] Pod management capabilities (exec, logs)
+- [x] Deployment management capabilities (scale)
+- [x] Analyze pods
+- [x] Analyze services
+- [x] Analyze deployments
+- [x] Analyze statefulsets
+- [x] Analyze ingress
+- [x] Analyze nodes
+- [ ] Analyze cluster
+
+
 ## Requirements
 - Go 1.23 or higher
 - kubectl configured
@@ -33,17 +48,3 @@ go build -o mcp-k8s-eye
 
 ### cursor tools
 ![cursor tools](./images/mcp-server-tools.png)
-
-## Features
-
-- [x] Connect to a Kubernetes cluster
-- [x] **Generic Kubernetes Resources** management capabilities (list, get, create, update, delete)
-- [x] Pod management capabilities (exec, logs)
-- [x] Deployment management capabilities (scale)
-- [x] Analyze pods
-- [x] Analyze services
-- [x] Analyze deployments
-- [x] Analyze statefulsets
-- [x] Analyze ingress
-- [x] Analyze nodes
-- [ ] Analyze cluster
