@@ -36,6 +36,9 @@ func NewServer(name, version string) (*Server, error) {
 		s.initStatefulSet(),
 		s.initNode(),
 		s.initIngress(),
+		s.initCronJob(),
+		s.initNetworkPolicy(),
+		s.initWebhook(),
 	)...)
 
 	return s, nil

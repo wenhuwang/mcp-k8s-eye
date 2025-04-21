@@ -5,6 +5,7 @@ go 1.23.6
 require (
 	github.com/google/gnostic v0.7.0
 	github.com/mark3labs/mcp-go v0.21.1
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0

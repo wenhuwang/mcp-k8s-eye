@@ -3,6 +3,8 @@ package utils
 import (
 	"crypto/rand"
 	"encoding/base64"
+	"fmt"
+	"strings"
 )
 
 func IsErrorReason(reason string) bool {
@@ -45,4 +47,19 @@ func MaskString(input string) string {
 		result[i] = anonymizePattern[int(key[i])%len(anonymizePattern)]
 	}
 	return base64.StdEncoding.EncodeToString([]byte(string(result)))
+}
+
+func MapToString(m map[string]string) string {
+	// Handle empty map case
+	if len(m) == 0 {
+		return ""
+	}
+
+	var pairs []string
+	for k, v := range m {
+		pairs = append(pairs, fmt.Sprintf("%s=%s", k, v))
+	}
+
+	// Efficient string joining
+	return strings.Join(pairs, ",")
 }
