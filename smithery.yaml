@@ -10,6 +10,6 @@ commandFunction:
   # A function that produces the CLI command to start the MCP on stdio.
   |-
   (config) => ({
-    "command": "mcp-k8s-eye",
-    "env": {}
+    command: "mcp-k8s-eye",
+    env: {}
   })
