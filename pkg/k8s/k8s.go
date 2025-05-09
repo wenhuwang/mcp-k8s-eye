@@ -8,6 +8,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/restmapper"
+	metricsclientset "k8s.io/metrics/pkg/client/clientset/versioned"
 )
 
 type Kubernetes struct {
@@ -17,6 +18,7 @@ type Kubernetes struct {
 	dynamicClient               dynamic.Interface
 	deferredDiscoveryRESTMapper *restmapper.DeferredDiscoveryRESTMapper
 	openapiSchema               *openapi_v2.Document
+	metricsClient               metricsclientset.Interface
 }
 
 // NewKubernetes creates a new Kubernetes client
@@ -36,6 +38,11 @@ func NewKubernetes() (*Kubernetes, error) {
 		return nil, err
 	}
 
+	metricsClient, err := metricsclientset.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+
 	return &Kubernetes{
 		config:                      config,
 		clientset:                   clientset,
@@ -43,5 +50,6 @@ func NewKubernetes() (*Kubernetes, error) {
 		dynamicClient:               dynamicClient,
 		deferredDiscoveryRESTMapper: restmapper.NewDeferredDiscoveryRESTMapper(memory.NewMemCacheClient(discoveryClient)),
 		openapiSchema:               &openapi_v2.Document{},
+		metricsClient:               metricsClient,
 	}, nil
 }

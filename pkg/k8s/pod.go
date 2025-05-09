@@ -12,6 +12,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/remotecommand"
+	metricsv1beta1api "k8s.io/metrics/pkg/apis/metrics/v1beta1"
 )
 
 // PodLogs returns the logs of a pod.
@@ -177,4 +178,55 @@ func (k *Kubernetes) analyzeContainerStatusFailures(statuses []v1.ContainerStatu
 	}
 
 	return failures
+}
+
+func (k *Kubernetes) PodResourceUsage(r common.Request) (string, error) {
+	apiGroups, err := k.discoveryClient.ServerGroups()
+	if err != nil {
+		return "", err
+	}
+
+	metricsAPIAvilable := utils.SupportedMetricsAPIVersionAvailable(apiGroups)
+	if !metricsAPIAvilable {
+		return "", fmt.Errorf("metrics API is not available")
+	}
+
+	versionedMetrics := &metricsv1beta1api.PodMetricsList{}
+	if r.Name != "" {
+		m, err := k.metricsClient.MetricsV1beta1().PodMetricses(r.Namespace).Get(r.Context, r.Name, metav1.GetOptions{})
+		if err != nil {
+			return "", err
+		}
+		versionedMetrics.Items = append(versionedMetrics.Items, *m)
+	} else {
+		versionedMetrics, err = k.metricsClient.MetricsV1beta1().PodMetricses(r.Namespace).List(r.Context, metav1.ListOptions{
+			LabelSelector: r.LabelSelector,
+		})
+		if err != nil {
+			return "", err
+		}
+	}
+
+	pfms := []*common.PodFormattedMetrics{}
+	for i := range versionedMetrics.Items {
+		pfm := &common.PodFormattedMetrics{
+			Name:      versionedMetrics.Items[i].Name,
+			Namespace: versionedMetrics.Items[i].Namespace,
+		}
+		for j := range versionedMetrics.Items[i].Containers {
+			pfm.Containers = append(pfm.Containers, common.ContainerFormattedMetrics{
+				Name:        versionedMetrics.Items[i].Containers[j].Name,
+				MemoryUsage: versionedMetrics.Items[i].Containers[j].Usage.Memory().String(),
+				CPUUsage:    versionedMetrics.Items[i].Containers[j].Usage.Cpu().String(),
+			})
+		}
+		pfms = append(pfms, pfm)
+	}
+
+	jsonData, err := json.Marshal(pfms)
+	if err != nil {
+		return "", err
+	}
+
+	return string(jsonData), nil
 }
