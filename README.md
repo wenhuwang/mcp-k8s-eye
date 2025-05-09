@@ -17,7 +17,7 @@ mcp-k8s-eye is a tool that can manage kubernetes cluster and analyze workload st
 
 
 ### Diagnostics
-- [x] Pod diagnostics (analyze pod and container status)
+- [x] Pod diagnostics (analyze pod status, container status, pod resource utilization)
 - [x] Service diagnostics (analyze service selector configuration, not ready endpoints, events)
 - [x] Deployment diagnostics (analyze available replicas)
 - [x] StatefulSet diagnostics (analyze statefulset service if exists, pvc if exists, available replicas)
@@ -30,7 +30,7 @@ mcp-k8s-eye is a tool that can manage kubernetes cluster and analyze workload st
 - [ ] Cluster diagnostics and troubleshooting 
 
 ### Monitoring
-- [ ] Pod usage, utilization (cpu, memory)
+- [ ] Pod and container resource usage (cpu, memory)
 - [ ] Deployment and Namespace dimension resource usage (cpu, memory)
 - [ ] Node capacity, utilization (cpu, memory)
 - [ ] Cluster capacity, utilization (cpu, memory)

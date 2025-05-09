@@ -213,11 +213,15 @@ func (k *Kubernetes) PodResourceUsage(r common.Request) (string, error) {
 			Name:      versionedMetrics.Items[i].Name,
 			Namespace: versionedMetrics.Items[i].Namespace,
 		}
+
 		for j := range versionedMetrics.Items[i].Containers {
+			name := versionedMetrics.Items[i].Containers[j].Name
+			cpu := fmt.Sprintf("%vm", versionedMetrics.Items[i].Containers[j].Usage.Cpu().MilliValue())
+			memory := fmt.Sprintf("%vMi", versionedMetrics.Items[i].Containers[j].Usage.Memory().Value()/1024/1024)
 			pfm.Containers = append(pfm.Containers, common.ContainerFormattedMetrics{
-				Name:        versionedMetrics.Items[i].Containers[j].Name,
-				MemoryUsage: versionedMetrics.Items[i].Containers[j].Usage.Memory().String(),
-				CPUUsage:    versionedMetrics.Items[i].Containers[j].Usage.Cpu().String(),
+				Name:        name,
+				MemoryUsage: memory,
+				CPUUsage:    cpu,
 			})
 		}
 		pfms = append(pfms, pfm)
