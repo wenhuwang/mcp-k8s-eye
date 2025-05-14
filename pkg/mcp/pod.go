@@ -6,7 +6,6 @@ import (
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
-	"github.com/wenhuwang/mcp-k8s-eye/pkg/common"
 )
 
 func (s *Server) initPod() []server.ServerTool {
@@ -47,19 +46,6 @@ func (s *Server) initPod() []server.ServerTool {
 			),
 			Handler: s.podAnalyze,
 		},
-		{
-			Tool: mcp.NewTool("pod resource usage",
-				mcp.WithDescription("get pod resource usage"),
-				mcp.WithString("namespace",
-					mcp.Description("the namespace to get pods in"),
-					mcp.Required(),
-				),
-				mcp.WithString("pod",
-					mcp.Description("the pod to get"),
-				),
-			),
-			Handler: s.podResourceUsage,
-		},
 	}
 }
 
@@ -89,23 +75,6 @@ func (s *Server) podAnalyze(ctx context.Context, ctr mcp.CallToolRequest) (*mcp.
 	res, err := s.k8s.AnalyzePod(ctx, ns)
 	if err != nil {
 		return mcp.NewToolResultError(fmt.Sprintf("failed to analyze pods in namespace %s: %v", ns, err)), nil
-	}
-	return mcp.NewToolResultText(res), nil
-}
-
-func (s *Server) podResourceUsage(ctx context.Context, ctr mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-	ns := ctr.Params.Arguments["namespace"].(string)
-	var pod string
-	if v, ok := ctr.Params.Arguments["pod"].(string); ok {
-		pod = v
-	}
-	res, err := s.k8s.PodResourceUsage(common.Request{
-		Context:   ctx,
-		Namespace: ns,
-		Name:      pod,
-	})
-	if err != nil {
-		return mcp.NewToolResultError(fmt.Sprintf("failed to get resource usage in namesoace %s: %v", ns, err)), nil
 	}
 	return mcp.NewToolResultText(res), nil
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
+	"github.com/wenhuwang/mcp-k8s-eye/pkg/common"
 )
 
 func (s *Server) initResource() []server.ServerTool {
@@ -70,6 +71,24 @@ func (s *Server) initResource() []server.ServerTool {
 			),
 			Handler: s.resourceCreateOrUpdate,
 		},
+		{
+			Tool: mcp.NewTool("workload resource usage",
+				mcp.WithDescription("workload resource usage"),
+				mcp.WithString("kind",
+					mcp.Description("the kind of workload"),
+					mcp.Required(),
+					mcp.Enum("Deployment", "StatefulSet", "DaemonSet", "ReplicaSet", "Pod"),
+				),
+				mcp.WithString("namespace",
+					mcp.Description("the namespace of workload"),
+					mcp.Required(),
+				),
+				mcp.WithString("name",
+					mcp.Description("the name of workload"),
+				),
+			),
+			Handler: s.workloadResourceUsage,
+		},
 	}
 }
 
@@ -110,6 +129,25 @@ func (s *Server) resourceCreateOrUpdate(ctx context.Context, ctr mcp.CallToolReq
 	res, err := s.k8s.ResourceCreateOrUpdate(ctx, resource)
 	if err != nil {
 		return mcp.NewToolResultError(fmt.Sprintf("failed to create/update resource: %v", err)), nil
+	}
+	return mcp.NewToolResultText(res), nil
+}
+
+func (s *Server) workloadResourceUsage(ctx context.Context, ctr mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	namespace := ctr.Params.Arguments["namespace"].(string)
+	kind := ctr.Params.Arguments["kind"].(string)
+	var name string
+	if v, ok := ctr.Params.Arguments["name"].(string); ok {
+		name = v
+	}
+	res, err := s.k8s.WorkloadResourceUsage(common.Request{
+		Context:      ctx,
+		Name:         name,
+		Namespace:    namespace,
+		WorkloadType: kind,
+	})
+	if err != nil {
+		return mcp.NewToolResultError(fmt.Sprintf("failed to get resource usage in namesoace %s: %v", namespace, err)), nil
 	}
 	return mcp.NewToolResultText(res), nil
 }

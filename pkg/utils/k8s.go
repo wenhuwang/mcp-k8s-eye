@@ -6,8 +6,8 @@ import (
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/client-go/kubernetes"
-	metricsapi "k8s.io/metrics/pkg/apis/metrics"
 	"sigs.k8s.io/yaml"
 )
 
@@ -111,24 +111,9 @@ func NamespaceOrDefault(namespace string) string {
 	return namespace
 }
 
-var (
-	supportedMetricsAPIVersions = []string{
-		"v1beta1",
+func MatchLabelsToLabelSelector(matchLabels map[string]string) string {
+	selector := &metav1.LabelSelector{
+		MatchLabels: matchLabels,
 	}
-)
-
-func SupportedMetricsAPIVersionAvailable(discoveredAPIGroups *metav1.APIGroupList) bool {
-	for _, discoveredAPIGroup := range discoveredAPIGroups.Groups {
-		if discoveredAPIGroup.Name != metricsapi.GroupName {
-			continue
-		}
-		for _, version := range discoveredAPIGroup.Versions {
-			for _, supportedVersion := range supportedMetricsAPIVersions {
-				if version.Version == supportedVersion {
-					return true
-				}
-			}
-		}
-	}
-	return false
+	return labels.Set(selector.MatchLabels).String()
 }
