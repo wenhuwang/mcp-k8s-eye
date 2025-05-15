@@ -151,3 +151,31 @@ func (s *Server) workloadResourceUsage(ctx context.Context, ctr mcp.CallToolRequ
 	}
 	return mcp.NewToolResultText(res), nil
 }
+
+// test prompt
+func (s *Server) getNamespacePrompt(ctx context.Context, request mcp.GetPromptRequest) (*mcp.GetPromptResult, error) {
+	var name string
+	if v, ok := request.Params.Arguments["name"]; ok {
+		name = v
+	} else {
+		name = "all namespaces"
+	}
+
+	return &mcp.GetPromptResult{
+		Description: fmt.Sprintf("Get namespace %s", name),
+		Messages: []mcp.PromptMessage{
+			{
+				Role: mcp.RoleUser,
+				Content: mcp.TextContent{
+					Text: fmt.Sprintf("Get namespace %s", name),
+				},
+			},
+			{
+				Role: mcp.RoleAssistant,
+				Content: mcp.TextContent{
+					Text: fmt.Sprintf("Namespace %s:", name),
+				},
+			},
+		},
+	}, nil
+}

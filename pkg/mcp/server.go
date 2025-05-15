@@ -3,6 +3,7 @@ package mcp
 import (
 	"slices"
 
+	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 	"github.com/wenhuwang/mcp-k8s-eye/pkg/k8s"
 )
@@ -40,6 +41,14 @@ func NewServer(name, version string) (*Server, error) {
 		s.initNetworkPolicy(),
 		s.initWebhook(),
 	)...)
+
+	// test prompt
+	s.server.AddPrompt(mcp.NewPrompt("get namespace",
+		mcp.WithPromptDescription("get namespaces"),
+		mcp.WithArgument("name",
+			mcp.ArgumentDescription("the namespace to get"),
+		),
+	), s.getNamespacePrompt)
 
 	return s, nil
 }
