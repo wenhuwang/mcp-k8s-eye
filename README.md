@@ -39,6 +39,33 @@ mcp-k8s-eye is a tool that can manage kubernetes cluster and analyze workload st
 - [x] Support multiple AI Clients
 
 
+## Tools Usage
+
+### Resource Operation Tools
+- `resource_get`: Get detailed resource information about a specific resource in a namespace
+- `resource_list`: List detailed resource information about all resources in a namespace 
+- `resource_create_or_update`: Create or update a resource in a namespace
+- `resource_delete`: Delete a resource in a namespace
+- `deployment_scale`: Scale a deployment in a namespace
+- `pod_exec`: Execute a command in a pod in a namespace`
+- `pod_logs`: Get logs from a pod in a namespace
+
+###  Diagnostics Tools
+- `pod_analyze`: Diagnose all pods in a namespace
+- `deployment_analyze`: Diagnose all deployments in a namespace
+- `statefulset_analyze`: Diagnose all statefulsets in a namespace
+- `service_analyze`: Diagnose all services in a namespace
+- `cronjob_analyze`: Diagnose all cronjobs in a namespace
+- `ingress_analyze`: Diagnose all ingresses in a namespace
+- `networkpolicy_analyze`: Diagnose all networkpolicies in a namespace
+- `validatingwebhook_analyze`: Diagnose all validatingwebhooks
+- `mutatingwebhook_analyze`: Diagnose all mutatingwebhooks
+- `node_analyze`: Diagnose all nodes in cluster
+
+### Monitoring Tools
+- `workload_resource_usage`: Get pod/deployment/replicaset/statefulset resource usage in a namepace (cpu, memory)
+
+
 ## Requirements
 - Go 1.23 or higher
 - kubectl configured
