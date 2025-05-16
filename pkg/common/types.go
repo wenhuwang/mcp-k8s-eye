@@ -40,7 +40,7 @@ type Sensitive struct {
 type Request struct {
 	Context       context.Context
 	Namespace     string
-	WorkloadType  string
+	Kind          string
 	Name          string
 	LabelSelector string
 }

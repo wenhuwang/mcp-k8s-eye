@@ -9,10 +9,12 @@ import (
 
 	"github.com/wenhuwang/mcp-k8s-eye/pkg/common"
 	"github.com/wenhuwang/mcp-k8s-eye/pkg/utils"
+	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/util/yaml"
+	"k8s.io/kubectl/pkg/describe"
 	metricsv1beta1api "k8s.io/metrics/pkg/apis/metrics/v1beta1"
 )
 
@@ -133,6 +135,38 @@ func (k *Kubernetes) resourceCreateOrUpdate(ctx context.Context, resources []*un
 	return fmt.Sprintf("All of the resource created/updated successfully"), nil
 }
 
+func (k *Kubernetes) ResourceDescribe(r common.Request) (string, error) {
+	kind := utils.Capitalize(r.Kind)
+	gv := utils.GetGroupVersionForKind(kind)
+	gvk := gv.WithKind(kind)
+
+	describer := func(mapping *meta.RESTMapping) (describe.ResourceDescriber, error) {
+		// try to get a describer
+		if describer, ok := describe.DescriberFor(mapping.GroupVersionKind.GroupKind(), k.config); ok {
+			return describer, nil
+		}
+		// if this is a kind we don't have a describer for yet, go generic if possible
+		if genericDescriber, ok := describe.GenericDescriberFor(mapping, k.config); ok {
+			return genericDescriber, nil
+		}
+		// otherwise return an unregistered error
+		return nil, fmt.Errorf("no description has been implemented for %s", mapping.GroupVersionKind.String())
+	}
+
+	mapping, err := k.deferredDiscoveryRESTMapper.RESTMapping(gvk.GroupKind(), gvk.Version)
+	if err != nil {
+		return "", err
+	}
+
+	d, err := describer(mapping)
+	if err != nil {
+		return "", err
+	}
+	return d.Describe(r.Namespace, r.Name, describe.DescriberSettings{
+		ShowEvents: true,
+	})
+}
+
 func (k *Kubernetes) gvrFor(gvk schema.GroupVersionKind) (schema.GroupVersionResource, error) {
 	mapping, err := k.deferredDiscoveryRESTMapper.RESTMapping(gvk.GroupKind(), gvk.Version)
 	if err != nil {
@@ -159,7 +193,7 @@ func (k *Kubernetes) isNamespaced(gvk schema.GroupVersionKind) (bool, error) {
 
 func (k *Kubernetes) WorkloadResourceUsage(r common.Request) (string, error) {
 	var workloadMetrics = make(map[string][]metricsv1beta1api.PodMetrics, 0)
-	switch r.WorkloadType {
+	switch r.Kind {
 	case "Deployment":
 		if r.Name == "" {
 			deployList, err := k.clientset.AppsV1().Deployments(r.Namespace).List(r.Context, metav1.ListOptions{

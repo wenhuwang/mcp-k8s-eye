@@ -12,7 +12,7 @@ mcp-k8s-eye is a tool that can manage kubernetes cluster and analyze workload st
   - Operations include: list, get, create, update, delete
 - [x] Pod management capabilities (exec, logs)
 - [x] Deployment management capabilities (scale)
-- [ ] Describe Kubernetes resources
+- [x] Describe Kubernetes resources
 - [ ] Explain Kubernetes resources
 
 
@@ -46,6 +46,7 @@ mcp-k8s-eye is a tool that can manage kubernetes cluster and analyze workload st
 - `resource_list`: List detailed resource information about all resources in a namespace 
 - `resource_create_or_update`: Create or update a resource in a namespace
 - `resource_delete`: Delete a resource in a namespace
+- `resource_describe`: Describe a resource detailed information in a namespace
 - `deployment_scale`: Scale a deployment in a namespace
 - `pod_exec`: Execute a command in a pod in a namespace`
 - `pod_logs`: Get logs from a pod in a namespace

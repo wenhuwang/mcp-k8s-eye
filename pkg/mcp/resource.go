@@ -72,6 +72,24 @@ func (s *Server) initResource() []server.ServerTool {
 			Handler: s.resourceCreateOrUpdate,
 		},
 		{
+			Tool: mcp.NewTool("resource describe",
+				mcp.WithDescription("describe resource"),
+				mcp.WithString("kind",
+					mcp.Description("the resource kind to describe"),
+					mcp.Required(),
+				),
+				mcp.WithString("namespace",
+					mcp.Description("the resource namespace to describe"),
+					mcp.Required(),
+				),
+				mcp.WithString("name",
+					mcp.Description("the resource name to describe"),
+					mcp.Required(),
+				),
+			),
+			Handler: s.ResourceDescribe,
+		},
+		{
 			Tool: mcp.NewTool("workload resource usage",
 				mcp.WithDescription("workload resource usage"),
 				mcp.WithString("kind",
@@ -133,6 +151,20 @@ func (s *Server) resourceCreateOrUpdate(ctx context.Context, ctr mcp.CallToolReq
 	return mcp.NewToolResultText(res), nil
 }
 
+func (s *Server) ResourceDescribe(ctx context.Context, ctr mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	r := common.Request{
+		Context:   ctx,
+		Kind:      ctr.Params.Arguments["kind"].(string),
+		Name:      ctr.Params.Arguments["name"].(string),
+		Namespace: ctr.Params.Arguments["namespace"].(string),
+	}
+	res, err := s.k8s.ResourceDescribe(r)
+	if err != nil {
+		return mcp.NewToolResultError(fmt.Sprintf("failed to describe resource: %v", err)), nil
+	}
+	return mcp.NewToolResultText(res), nil
+}
+
 func (s *Server) workloadResourceUsage(ctx context.Context, ctr mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	namespace := ctr.Params.Arguments["namespace"].(string)
 	kind := ctr.Params.Arguments["kind"].(string)
@@ -141,10 +173,10 @@ func (s *Server) workloadResourceUsage(ctx context.Context, ctr mcp.CallToolRequ
 		name = v
 	}
 	res, err := s.k8s.WorkloadResourceUsage(common.Request{
-		Context:      ctx,
-		Name:         name,
-		Namespace:    namespace,
-		WorkloadType: kind,
+		Context:   ctx,
+		Name:      name,
+		Namespace: namespace,
+		Kind:      kind,
 	})
 	if err != nil {
 		return mcp.NewToolResultError(fmt.Sprintf("failed to get resource usage in namesoace %s: %v", namespace, err)), nil
